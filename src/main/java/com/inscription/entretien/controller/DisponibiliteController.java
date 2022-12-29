@@ -1,47 +1,47 @@
 package com.inscription.entretien.controller;
 
 import com.inscription.entretien.entity.Disponibilite;
+import com.inscription.entretien.service.CompteService;
 import com.inscription.entretien.service.DisponibiliteService;
-import jakarta.persistence.Id;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 public class DisponibiliteController {
     @Autowired
-    DisponibiliteService Service;
+    CompteService compteService;
+    @Autowired
+    DisponibiliteService disponibiliteService;
 
-    @PostMapping("/addDisponibilite")
-    public Disponibilite addDisponibilite(@RequestBody Disponibilite disponibilite){
-        return Service.saveDisponibilite(disponibilite);
-    }
-
-    @PostMapping("/addDisponibilites")
-    public List<Disponibilite> addDisponibilites(@RequestBody List<Disponibilite> disponibilites){
-        return Service.savaDisponibilites(disponibilites);
-    }
-
-    @GetMapping("/Disponibilites")
-    public List<Disponibilite> findAllDisponibilite(){
-        return Service.getDisponibilites();
-    }
-
-    @GetMapping("/Disponibilite/{id}")
-    public Disponibilite findDisponibiliteById(@PathVariable Long id){
-        return Service.getDisponibiliteById(id);
-    }
-
-    @PutMapping("/update")
-    public Disponibilite updateDisponibilite(@RequestBody Disponibilite disponibilite){
-        return Service.updateDisponibilite(disponibilite);
-    }
-
-    @DeleteMapping("/delete/{id}")
-    public String deleteDisponibilite(@PathVariable Long id){
-        return Service.deleteDisponibilite(id);
+    @GetMapping("/comptes/{compteId}/disponibilites")
+    public Page<Disponibilite> getAllDisponibilitesByCompteId(@PathVariable (value = "compteId") Long compteId,
+                                                              Pageable pageable) {
+        return disponibiliteService.getAllDisponibilitesByCompteId(compteId,pageable);
     }
 
 
+    @PostMapping("/comptes/{compteId}/disponibilites")
+    public Disponibilite createDisponibilite(@PathVariable (value = "compteId") Long compteId,
+                                             @RequestBody Disponibilite disponibilite) {
+        return disponibiliteService.createDisponibilite(compteId,disponibilite);
+    }
+
+
+    @PutMapping("/comptes/{compteId}/disponibilites/{disponibiliteId}")
+    public Disponibilite updateDisponibilite(@PathVariable (value = "compteId") Long compteId,
+                                             @PathVariable (value = "disponibiliteId") Long disponibiliteId,
+                                             @RequestBody Disponibilite disponibiliteRequest) {
+        return disponibiliteService.updateDisponibilite(compteId,disponibiliteId,disponibiliteRequest);
+    }
+
+
+
+    @DeleteMapping("/comptes/{compteId}/disponibilites/{disponibiliteId}")
+    public ResponseEntity<?> deleteDisponibilite(@PathVariable (value = "compteId") Long compteId,
+                                                 @PathVariable (value = "disponibiliteId") Long disponibiliteId) {
+        return disponibiliteService.deleteDisponibilite(compteId, disponibiliteId);
+    }
 }
