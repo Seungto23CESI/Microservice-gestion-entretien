@@ -19,6 +19,7 @@ public class CompteService {
 
 
     public Page<Compte> getAllComptes(Pageable pageable) {
+
         return compteRepository.findAll(pageable);
     }
 
